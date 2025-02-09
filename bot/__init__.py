@@ -11,7 +11,7 @@ from os import environ, getcwd
 from os import path as ospath
 from os import remove as osremove
 from socket import setdefaulttimeout
-from subprocess import Popen
+from subprocess import Popen, check_output
 from subprocess import run as srun
 from threading import Thread
 from time import sleep, time
@@ -529,9 +529,11 @@ if ospath.exists('categories.txt'):
                 tempdict['index_link'] = ''
             categories_dict[name] = tempdict
 
-if BASE_URL:
-    Popen(
-        f"gunicorn web.wserver:app --bind 0.0.0.0:{BASE_URL_PORT} --worker-class gevent", shell=True)
+PORT = environ.get("PORT")
+Popen(
+    f"gunicorn web.wserver:app --bind 0.0.0.0:{PORT} --worker-class gevent",
+    shell=True,
+)
 
 srun(["xnox", "-d", f"--profile={getcwd()}"])
 if not ospath.exists('.netrc'):
@@ -539,8 +541,19 @@ if not ospath.exists('.netrc'):
         pass
 srun(["chmod", "600", ".netrc"])
 srun(["cp", ".netrc", "/root/.netrc"])
-srun(["chmod", "+x", "aria.sh"])
-srun("./aria.sh", shell=True)
+trackers = (
+    check_output(
+        "curl -Ns https://raw.githubusercontent.com/XIU2/TrackersListCollection/master/all.txt https://ngosang.github.io/trackerslist/trackers_all_http.txt https://newtrackon.com/api/all https://raw.githubusercontent.com/hezhijie0327/Trackerslist/main/trackerslist_tracker.txt | awk '$0' | tr '\n\n' ','",
+        shell=True,
+    )
+    .decode("utf-8")
+    .rstrip(",")
+)
+with open("a2c.conf", "a+") as a:
+    if TORRENT_TIMEOUT is not None:
+        a.write(f"bt-stop-timeout={TORRENT_TIMEOUT}\n")
+    a.write(f"bt-tracker=[{trackers}]")
+srun(["xria", "--conf-path=/usr/src/app/a2c.conf"], check=False)
 if ospath.exists('accounts.zip'):
     if ospath.exists('accounts'):
         srun(["rm", "-rf", "accounts"])
