@@ -26,7 +26,7 @@ pillow
 psutil
 pybase64
 pymongo
-pyrogram
+pyrofork
 python-dotenv
 python-magic
 qbittorrent-api
@@ -36,4 +36,4 @@ tenacity
 tgcrypto
 uvloop
 xattr
-yt-dlp
+yt-dlp[default,curl-cffi]
