@@ -23,6 +23,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from pyrogram import Client as tgClient
 from pyrogram import enums
+from pyrogram import utils
 from qbittorrentapi import Client as qbClient
 from tzlocal import get_localzone
 from uvloop import install
@@ -31,6 +32,8 @@ faulthandler_enable()
 install()
 setdefaulttimeout(600)
 
+utils.MIN_CHAT_ID = -999999999999
+utils.MIN_CHANNEL_ID = -100999999999999
 botStartTime = time()
 
 basicConfig(format='%(asctime)s - %(name)s %(levelname)s : %(message)s [%(module)s:%(lineno)d]',
