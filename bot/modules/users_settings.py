@@ -157,11 +157,11 @@ async def add_rclone(_, message, pre_event):
         await mkdir(path)
     des_dir = ospath.join(path, f'{user_id}.conf')
     await message.download(file_name=des_dir)
-    update_user_ldata(user_id, 'rclone', f'rclone/{user_id}.conf')
+    update_user_ldata(user_id, 'xone', f'rclone/{user_id}.conf')
     await message.delete()
     await update_user_settings(pre_event)
     if DATABASE_URL:
-        await DbManger().update_user_doc(user_id, 'rclone', des_dir)
+        await DbManger().update_user_doc(user_id, 'xone', des_dir)
 
 
 async def leech_split_size(_, message, pre_event):
@@ -331,7 +331,7 @@ Check all yt-dlp api options from this <a href='https://github.com/yt-dlp/yt-dlp
         if await aiopath.exists(rclone_path):
             await query.answer()
             await aioremove(rclone_path)
-            update_user_ldata(user_id, 'rclone', '')
+            update_user_ldata(user_id, 'xone', '')
             await update_user_settings(query)
             if DATABASE_URL:
                 await DbManger().update_user_doc(user_id, 'rclone')
